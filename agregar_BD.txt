@@ -1,0 +1,72 @@
+ 
+ """ PARA ACTIVAR ESTO SE NECESITA UNA BASE DE DATOS EN VScode
+
+  confused_person = ['no se', 'que hago', 'consejo', 'triste']
+  
+  starter_advices = [
+    'Tú puedes con todo... menos en el pvp',
+    'Ánimo ya pasamos lo más dificil, sigue los más culero y después lo más cabrón',
+    'Eres una gran persona no te des por vencida'
+  ]
+    
+  if 'responding' not in db.keys():
+    db['responding'] = True
+
+  # Para agregar frases 
+def update_advices(advising_message):
+  if 'advices' in db.keys():
+    advices = db['advices']
+    advices.append(advising_message)
+    db['advices'] = advices
+  else:
+    db['advices'] = [advising_message]
+
+# Para borar frases
+def delete_advice(index):
+  advices = db['advices']
+  if len(advices) > index:
+    del advices[index]
+    db['advices'] = advices
+
+  msg = message.content
+
+  if db['responding']:
+    options = starter_advices
+    if 'advices' in db.keys():
+      # Arreglar que no saque las llaves
+      options = options + db['advices'].value
+
+    if any(word in msg for word in confused_person):
+      await message.channel.send(random.choice(options))
+
+  # Comando para agregar frases desde el chat de discord
+  if msg.startswith('!new'):
+    advising_message = msg.split('!new ', 1)[1]
+    update_advices(advising_message)
+    await message.channel.send('Nuevo consejo agregado')
+    
+  # Comando para borrar frases desde el chat de discord
+  if msg.startswith('!del'):
+    advices = []
+    if 'advices' in db.keys():
+      index = int(msg.split('!del', 1)[1])
+      delete_advice(index)
+      advices = db['advices']
+    await message.channel.send(advices)
+
+  if msg.startswith('!list'):
+    advices = []
+    if 'advices' in db.keys():
+      advices = db['advices']
+    await message.channel.send(advices)
+
+  if msg.startswith('!responding'):
+    value = msg.split('!responding ', 1)[1]
+
+    if value.lower() == 'true':
+      db['responding'] = True
+      await message.channel.send('Las respuestas están funcionando')
+    else:
+      db['responding'] = False
+      await message.channel.send('Se han apagado las respuestas')
+  """
